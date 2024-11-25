@@ -11,6 +11,7 @@ class Generator(nn.Module):
         
         # Enhanced architecture with more layers and dropout
         self.num_features = num_features
+        self.latent_dim = latent_dim
         self.model = nn.Sequential(
             nn.Linear(latent_dim, 256),
             nn.LayerNorm(256),
@@ -133,7 +134,7 @@ def train_generator_with_wasserstein(generator, discriminator, optimizer_g, devi
     """
     Train the generator using Wasserstein loss.
     """
-    batch_size = 32  # Ensure this matches your batch size
+    batch_size = next(generator.parameters()).device
     z = torch.randn(batch_size, generator.latent_dim, device=device)
 
     # Generate fake sequences
@@ -302,8 +303,10 @@ class TsunamiDetector:
         anomaly_score = self._compute_anomaly_score(sequence)
         
         # Calculate confidence score (0 to 1)
-        confidence = (anomaly_score - self.threshold) / (anomaly_score - self.threshold)
-        confidence = np.clip(confidence, 0, 1)
+        confidence = np.clip((anomaly_score - self.threshold) / self.threshold, 0, 1)
+
+
+
 
         
         is_anomaly = anomaly_score > (self.threshold * threshold_multiplier)
