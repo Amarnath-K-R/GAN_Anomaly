@@ -18,7 +18,7 @@ class Generator(nn.Module):
             nn.ReLU(),
             nn.Dropout(0.3),
             
-            nn.Linear(256, 512),
+            nn.Linear(256,512),
             nn.LayerNorm(512),
             nn.ReLU(),
             nn.Dropout(0.3),
